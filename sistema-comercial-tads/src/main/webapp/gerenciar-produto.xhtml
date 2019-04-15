@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Produto</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:menubar>
+                <p:submenu label="Cadastrar">
+                    <p:menuitem value="Categoria" url="faces/gerenciar-categoria.xhtml"></p:menuitem>
+                </p:submenu>
+            </p:menubar>
+            <p:spacer height="10"></p:spacer>
+            <p:fieldset legend="Produto">
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:commandButton value="Novo" actionListener="#{produtoBean.novo()}"
+                                     update="@form"></p:commandButton>
+
+                    <p:commandButton value="Pesquisar" actionListener="#{produtoBean.pesquisar()}"
+                                     update="@form"></p:commandButton>
+
+                    <p:commandButton value="Salvar" actionListener="#{produtoBean.adicionarProduto()}"
+                                     update="@form" 
+                                     rendered="#{produtoBean.statusTela != 'PESQUISANDO'}"></p:commandButton>
+
+                </p:toolbarGroup>
+            </p:toolbar>
+
+            <!-- Mensagem em linha em baixo da toolbar -->
+            <p:messages autoUpdate="true" showDetail="true"></p:messages>
+
+            <!-- Mensagem flutuante no canto superior direito -->
+            <p:growl autoUpdate="true" showDetail="true"></p:growl>
+
+            <p:panelGrid columns="2" styleClass="ui-noborder" 
+                         rendered="#{produtoBean.statusTela != 'PESQUISANDO'}">
+
+                <h:outputLabel value="Nome" for="inputNome"></h:outputLabel>
+                <p:inputText value="#{produtoBean.produto.nome}" id="inputNome"></p:inputText>
+                <h:outputLabel value="Marca" for="inputMarca"></h:outputLabel>
+                <p:inputText value="#{produtoBean.produto.marca}" id="inputMarca"></p:inputText>
+                <h:outputLabel value="Codigo de Barras" for="inputCodigoBarras"></h:outputLabel>
+                <p:inputText value="#{produtoBean.produto.codigoBarras}" id="inputCodigoBarras"></p:inputText>
+                <h:outputLabel value="Unidade de Medida" for="inputUnidadeMedida"></h:outputLabel>
+                <p:inputText value="#{produtoBean.produto.unidadeMedida}" id="inputUnidadeMedida"></p:inputText>
+                <h:outputLabel value="Categoria" for="selectCategoria"></h:outputLabel>
+                <p:selectOneMenu value="#{produtoBean.produto.categoria}">
+                    <f:selectItem itemLabel="Selecione" itemValue=""></f:selectItem>
+                    <f:selectItems value="#{produtoBean.categorias}" var="cat" itemLabel="#{cat.nome}" itemValue="#{cat}"></f:selectItems>
+                </p:selectOneMenu>
+
+            </p:panelGrid>
+
+            <p:dataTable value="#{produtoBean.produtos}" var="produto" rendered="#{produtoBean.statusTela == 'PESQUISANDO'}">
+
+                <p:column headerText="ID">
+                    <h:outputText value="#{produto.id}"></h:outputText>
+                </p:column>                    
+                <p:column headerText="Nome">
+                    <h:outputText value="#{produto.nome}"></h:outputText>
+                </p:column>
+                <p:column headerText="Marca">
+                    <h:outputText value="#{produto.marca}"></h:outputText>
+                </p:column>
+                <p:column headerText="Codigo de Barras">
+                    <h:outputText value="#{produto.codigoBarras}"></h:outputText>
+                </p:column>
+                <p:column headerText="Unidade de Medida">
+                    <h:outputText value="#{produto.unidadeMedida}"></h:outputText>
+                </p:column>
+                <p:column headerText="Categoria">
+                    <h:outputText value="#{produto.categoria.nome}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <p:commandButton value="Apagar" update="@form"
+                                     actionListener="#{produtoBean.remover(produto)}">
+                        <p:confirm header="Confirmação" message="Tem certeza que deseja apagar para sempre?" icon="fa fa-exclamation-triangle" />
+                    </p:commandButton>
+
+                    <p:commandButton value="Editar" update="@form"
+                                     actionListener="#{produtoBean.editar(produto)}"></p:commandButton>
+                </p:column>
+            </p:dataTable>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="fa fa-trash-o" />
+                <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="fa fa-undo" />
+            </p:confirmDialog> 
+
+            </p:fieldset>
+        </h:form>
+    </h:body>
+</html>
+
